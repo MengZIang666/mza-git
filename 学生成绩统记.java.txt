@@ -1,0 +1,176 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+class Student {
+    private String name;
+    private String studentId;
+    private String course;
+    private double score;
+
+    public Student(String name, String studentId, String course, double score) {
+        this.name = name;
+        this.studentId = studentId;
+        this.course = course;
+        this.score = score;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getStudentId() {
+        return studentId;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public double getScore() {
+        return score;
+    }
+}
+
+public class StudentGradeManagement {
+    private static List<Student> students = new ArrayList<>();
+    private static Scanner scanner = new Scanner(System.in);
+
+    // 记录学生成绩
+    public static void recordScore() {
+        System.out.print("请输入学生姓名: ");
+        String name = scanner.nextLine();
+
+        System.out.print("请输入学生学号: ");
+        String studentId = scanner.nextLine();
+
+        System.out.print("请输入课程名称: ");
+        String course = scanner.nextLine();
+
+        double score;
+        while (true) {
+            try {
+                System.out.print("请输入成绩 (0-100) : ");
+                score = Double.parseDouble(scanner.nextLine());
+                if (score < 0 || score > 100) {
+                    System.out.println("成绩必须在0-100之间，请重新输入。");
+                } else {
+                    break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("输入无效，请输入一个有效的数字。");
+            }
+        }
+
+        students.add(new Student(name, studentId, course, score));
+        System.out.println("成绩已成功记录!");
+    }
+
+    // 查询学生成绩
+    public static void queryScore() {
+        System.out.println("请选择查询方式:");
+        System.out.println("1. 按学生姓名查询");
+        System.out.println("2. 按学生学号查询");
+        System.out.println("3. 按课程名称查询");
+        System.out.print("请输入选项序号: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (choice) {
+            case 1:
+                System.out.print("请输入学生姓名: ");
+                String name = scanner.nextLine();
+                for (Student student : students) {
+                    if (student.getName().equals(name)) {
+                        System.out.println("姓名: " + student.getName() + ", 学号: " + student.getStudentId() + ", 课程: " + student.getCourse() + ", 成绩: " + student.getScore());
+                    }
+                }
+                break;
+            case 2:
+                System.out.print("请输入学生学号: ");
+                String studentId = scanner.nextLine();
+                for (Student student : students) {
+                    if (student.getStudentId().equals(studentId)) {
+                        System.out.println("姓名: " + student.getName() + ", 学号: " + student.getStudentId() + ", 课程: " + student.getCourse() + ", 成绩: " + student.getScore());
+                    }
+                }
+                break;
+            case 3:
+                System.out.print("请输入课程名称: ");
+                String course = scanner.nextLine();
+                for (Student student : students) {
+                    if (student.getCourse().equals(course)) {
+                        System.out.println("姓名: " + student.getName() + ", 学号: " + student.getStudentId() + ", 课程: " + student.getCourse() + ", 成绩: " + student.getScore());
+                    }
+                }
+                break;
+            default:
+                System.out.println("无效的查询选项。");
+        }
+    }
+
+    // 统计课程成绩
+    public static void statisticScore() {
+        System.out.print("请输入要统计的课程名称: ");
+        String course = scanner.nextLine();
+
+        List<Double> scores = new ArrayList<>();
+        for (Student student : students) {
+            if (student.getCourse().equals(course)) {
+                scores.add(student.getScore());
+            }
+        }
+
+        if (scores.size() > 0) {
+            double sum = 0;
+            for (double score : scores) {
+                sum += score;
+            }
+            double average = sum / scores.size();
+            double max = scores.get(0);
+            double min = scores.get(0);
+            for (double score : scores) {
+                if (score > max) {
+                    max = score;
+                }
+                if (score < min) {
+                    min = score;
+                }
+            }
+            System.out.println(course + "课程的平均分: " + average + ", 最高分: " + max + ", 最低分: " + min);
+        } else {
+            System.out.println("没有找到课程 " + course + " 的成绩记录。");
+        }
+    }
+
+    public static void main(String[] args) {
+        while (true) {
+            System.out.println("欢迎使用学生成绩管理系统");
+            System.out.println("请选择操作:");
+            System.out.println("1. 记录学生成绩");
+            System.out.println("2. 查询学生成绩");
+            System.out.println("3. 统计课程成绩");
+            System.out.println("4. 退出系统");
+            System.out.print("请输入选项序号: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1:
+                    recordScore();
+                    break;
+                case 2:
+                    queryScore();
+                    break;
+                case 3:
+                    statisticScore();
+                    break;
+                case 4:
+                    System.out.println("感谢使用，系统退出。");
+                    return;
+                default:
+                    System.out.println("无效的选项，请重新输入。");
+            }
+        }
+    }
+}
