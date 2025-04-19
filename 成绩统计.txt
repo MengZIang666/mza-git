@@ -1,0 +1,96 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class GradeStatistics {
+    private List<GradeRecord> gradeRecords;
+    
+    public GradeStatistics() {
+        this.gradeRecords = new ArrayList<>();
+    }
+    
+    // 添加成绩记录
+    public void addGradeRecord(GradeRecord record) {
+        gradeRecords.add(record);
+    }
+    
+    // 按学生统计成绩
+    public Map<Student, List<GradeRecord>> getGradesByStudent() {
+        Map<Student, List<GradeRecord>> result = new HashMap<>();
+        
+        for (GradeRecord record : gradeRecords) {
+            Student student = record.getStudent();
+            if (!result.containsKey(student)) {
+                result.put(student, new ArrayList<>());
+            }
+            result.get(student).add(record);
+        }
+        
+        return result;
+    }
+    
+    // 按课程统计成绩
+    public Map<Course, List<GradeRecord>> getGradesByCourse() {
+        Map<Course, List<GradeRecord>> result = new HashMap<>();
+        
+        for (GradeRecord record : gradeRecords) {
+            Course course = record.getCourse();
+            if (!result.containsKey(course)) {
+                result.put(course, new ArrayList<>());
+            }
+            result.get(course).add(record);
+        }
+        
+        return result;
+    }
+    
+    // 计算课程平均分
+    public Map<Course, Double> getAverageByCourse() {
+        Map<Course, Double> result = new HashMap<>();
+        Map<Course, List<GradeRecord>> courseGrades = getGradesByCourse();
+        
+        for (Map.Entry<Course, List<GradeRecord>> entry : courseGrades.entrySet()) {
+            Course course = entry.getKey();
+            List<GradeRecord> records = entry.getValue();
+            
+            double sum = 0;
+            for (GradeRecord record : records) {
+                sum += record.getScore();
+            }
+            
+            result.put(course, sum / records.size());
+        }
+        
+        return result;
+    }
+    
+    // 计算学生平均分
+    public Map<Student, Double> getAverageByStudent() {
+        Map<Student, Double> result = new HashMap<>();
+        Map<Student, List<GradeRecord>> studentGrades = getGradesByStudent();
+        
+        for (Map.Entry<Student, List<GradeRecord>> entry : studentGrades.entrySet()) {
+            Student student = entry.getKey();
+            List<GradeRecord> records = entry.getValue();
+            
+            double sum = 0;
+            for (GradeRecord record : records) {
+                sum += record.getScore();
+            }
+            
+            result.put(student, sum / records.size());
+        }
+        
+        return result;
+    }
+    
+    // 打印所有成绩记录
+    public void printAllRecords() {
+        System.out.println("===== 所有成绩记录 =====");
+        for (GradeRecord record : gradeRecords) {
+            System.out.println(record);
+        }
+        System.out.println("=====================");
+    }
+}
